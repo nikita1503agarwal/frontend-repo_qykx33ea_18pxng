@@ -1,27 +1,39 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import Layout from './components/Layout'
+import CheckInForm from './components/CheckInForm'
+import Summary from './components/Summary'
+import Goals from './components/Goals'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
+  const [refreshKey, setRefreshKey] = useState(0)
+
+  const onSaved = () => setRefreshKey((k)=>k+1)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
+    <Layout>
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="space-y-6">
+          <CheckInForm baseUrl={baseUrl} onSaved={onSaved} />
+          <div id="maal">
+            <Goals baseUrl={baseUrl} />
+          </div>
+        </div>
+        <div className="space-y-6">
+          <Summary baseUrl={baseUrl} refreshKey={refreshKey} />
+          <div id="indsigter" className="bg-white/70 backdrop-blur rounded-xl p-6 shadow-sm border border-white/60">
+            <h2 className="text-xl font-semibold mb-2">Hurtige forklaringer (PERMA)</h2>
+            <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
+              <li><span className="font-semibold">P – Positive Emotioner:</span> små, hyppige øjeblikke af glæde, taknemmelighed og håb.</li>
+              <li><span className="font-semibold">E – Engagement:</span> brug dine styrker på meningsfulde udfordringer – flow.</li>
+              <li><span className="font-semibold">R – Relationer:</span> kvalitet i forbindelser øger trivsel og robusthed.</li>
+              <li><span className="font-semibold">M – Mening:</span> forbind dine handlinger med et større “hvorfor”.</li>
+              <li><span className="font-semibold">A – Accomplishment:</span> små sejre og fremdrift styrker mestring.</li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
+    </Layout>
   )
 }
 
